@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 
 import { generateProducts } from './data';
 import ProductList from './components/ProductList';
@@ -6,27 +6,32 @@ import ProductList from './components/ProductList';
 const dummyProducts = generateProducts();
 
 function filterProducts(filterTerm) {
-  if (!filterTerm) {
-    return dummyProducts;
-  }
-  return dummyProducts.filter((product) => product.includes(filterTerm));
+	if (!filterTerm) {
+		return dummyProducts;
+	}
+	return dummyProducts.filter((product) => product.includes(filterTerm));
 }
 
 function App() {
-  const [filterTerm, setFilterTerm] = useState('');
+	const [filterTerm, setFilterTerm] = useState('');
+	const [isPending, startTransition] = useTransition();
 
-  const filteredProducts = filterProducts(filterTerm);
+	const filteredProducts = filterProducts(filterTerm);
 
-  function updateFilterHandler(event) {
-    setFilterTerm(event.target.value);
-  }
+	function updateFilterHandler(event) {
+		// startTransition(() => {
+		// 	setFilterTerm(event.target.value);
+		// });
 
-  return (
-    <div id="app">
-      <input type="text" onChange={updateFilterHandler} />
-      <ProductList products={filteredProducts} />
-    </div>
-  );
+		setFilterTerm(event.target.value);
+	}
+
+	return (
+		<div id="app">
+			<input type="text" onChange={updateFilterHandler} />
+			<ProductList products={filteredProducts} />
+		</div>
+	);
 }
 
 export default App;
